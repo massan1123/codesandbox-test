@@ -1,51 +1,84 @@
-console.clear();
-// const myProfile = {
-//   name: "まっさん",
-//   age: 37
-// };
+import "./styles.css";
 
-// // const msg = `名前は${myProfile.name}です。年齢は${myProfile.age}歳です。`;
-// // console.log(msg);
+const onClickAdd = () => {
+  // テキストボックスの値を取得し、初期化する
+  const inputText = document.getElementById("add-text").value;
+  document.getElementById("add-text").value = "";
 
-// const { name, age } = myProfile;
+  createIncompleteList(inputText);
+};
 
-// const msg = `名前は${name}です。年齢は${age}歳です。`;
-// console.log(msg);
+// 未完了リストから指定の要素を削除
+const deleteFromIncompleteList = (target) => {
+  document.getElementById("incomplete-list").removeChild(target);
+};
 
-// const myProfile = ["まっさん", 37];
-// // const msg = `名前は${myProfile[0]}で、年齢は${myProfile[1]}歳です。`;
-// // console.log(msg);
-// const [name, age] = myProfile;
-// const msg2 = `名前は${name}で、年齢は${age}歳です。`;
-// console.log(msg2);
+// 未完了リストに追加する関数
+const createIncompleteList = (text) => {
+  // li生成
+  const incompleteLi = document.createElement("li");
+  incompleteLi.className = "list-row";
 
-// const sayHello = (name = "名無し") => console.log(`こんにちは、${name}さん！`);
-// sayHello("めぐみるく");
+  // pタグ生成
+  const incompleteP = document.createElement("p");
+  incompleteP.innerText = text;
 
-/**
- * スプレッド構文...
- */
-// 配列の展開
-// const arr = [6, 4];
-// const sumFunc = (num1, num2) => console.log(num1 + num2);
-// sumFunc(arr[0], arr[1]);
-// sumFunc(...arr);
+  // button(完了)タグ生成
+  const completeButton = document.createElement("button");
+  completeButton.innerText = "完了";
+  completeButton.addEventListener("click", () => {
+    // 押された完了ボタンの親タグ（li）を未完了リストから削除
+    deleteFromIncompleteList(completeButton.parentNode);
+    // 完了リストに追加する要素
+    const addTarget = completeButton.parentNode;
+    // TODO内容テキストを取得
+    const text = addTarget.firstElementChild.innerText;
+    // li以下を初期化
+    addTarget.textContent = null;
 
-// まとめる
-// const arr = [1, 2, 3, 4, 5];
-// const [num1, num2, ...arr2] = arr;
-// console.log(num1);
-// console.log(num2);
-// console.log(arr2);
+    // pタグ生成
+    const completeP = document.createElement("p");
+    completeP.innerText = text;
 
-/**
- * 配列のコピー、結合
- */
-const arr4 = [10, 25];
-const arr5 = [30, 40];
-const arr6 = [...arr4];
-console.log(arr6);
-const arr7 = [...arr4, ...arr5];
-arr7[0] = 100;
-console.log(arr7);
-console.log(arr4);
+    // buttonタグ生成
+    const backButton = document.createElement("button");
+    backButton.innerText = "戻す";
+    backButton.addEventListener("click", () => {
+      // 押された戻すボタンの親タグ（li）を完了リストから削除
+      const deleteTarget = backButton.parentNode;
+      document.getElementById("complete-list").removeChild(deleteTarget);
+
+      // テキスト取得
+      const text = backButton.parentNode.firstChild.innerText;
+      createIncompleteList(text);
+    });
+
+    // liタグの子要素に各要素を設定
+    addTarget.appendChild(completeP);
+    addTarget.appendChild(backButton);
+    console.log(addTarget);
+
+    // 完了リストに追加
+    document.getElementById("complete-list").appendChild(addTarget);
+  });
+
+  // button(削除)タグ生成
+  const deleteButton = document.createElement("button");
+  deleteButton.innerText = "削除";
+  deleteButton.addEventListener("click", () => {
+    // 押された削除ボタンの親タグ（li）を未完了リストから削除
+    deleteFromIncompleteList(deleteButton.parentNode);
+  });
+
+  // liタグの子要素に各要素を設定
+  incompleteLi.appendChild(incompleteP);
+  incompleteLi.appendChild(completeButton);
+  incompleteLi.appendChild(deleteButton);
+
+  // 未完了リストに追加
+  document.getElementById("incomplete-list").appendChild(incompleteLi);
+};
+
+document
+  .getElementById("add-button")
+  .addEventListener("click", () => onClickAdd());
